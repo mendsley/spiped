@@ -117,6 +117,10 @@ Run in foreground.  This can be useful with systems like daemontools.
 Disable transport layer keep-alives.
 (By default they are enabled.)
 .TP
+.B \-G
+Disable graceful shutdown.
+(SIGTERM will cause spiped to exit immediately)
+.TP
 .B \-n <max # connections>
 Limit on the number of simultaneous connections allowed.
 A value of 0 indicates that no limit should be imposed; this may be
@@ -163,6 +167,6 @@ On receipt of the
 signal
 .B spiped
 will stop accepting new connections and exit once there are
-no active connections left.
+no active connections left. This can be disabled with -G.
 .SH SEE ALSO
 .BR spipe (1).

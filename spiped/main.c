@@ -25,7 +25,7 @@ usage(void)
 	fprintf(stderr,
 	    "usage: spiped {-e | -d} -s <source socket> "
 	    "-t <target socket> -k <key file>\n"
-	    "    [-DFj] [-f | -g] [-n <max # connections>] "
+	    "    [-DFjG] [-f | -g] [-n <max # connections>] "
 	    "[-o <connection timeout>]\n"
 	    "    [-p <pidfile>] [-r <rtime> | -R]\n"
 	    "       spiped -v\n");
@@ -70,6 +70,7 @@ main(int argc, char * argv[])
 	int opt_g = 0;
 	int opt_F = 0;
 	int opt_j = 0;
+	int opt_G = 0;
 	const char * opt_k = NULL;
 	int opt_n_set = 0;
 	size_t opt_n = 0;
@@ -125,6 +126,11 @@ main(int argc, char * argv[])
 			if (opt_g)
 				usage();
 			opt_g = 1;
+			break;
+		GETOPT_OPT("-G"):
+			if (opt_G)
+				usage();
+			opt_G = 1;
 			break;
 		GETOPT_OPT("-j"):
 			if (opt_j)
@@ -319,10 +325,12 @@ main(int argc, char * argv[])
 	sas_t = NULL;
 
 	/* Register a handler for SIGTERM. */
-	if (graceful_shutdown_initialize(&callback_graceful_shutdown,
-	    dispatch_cookie)) {
-		warn0("Failed to start graceful_shutdown timer");
-		goto err6;
+	if (opt_G == 0) {
+		if (graceful_shutdown_initialize(&callback_graceful_shutdown,
+			dispatch_cookie)) {
+			warn0("Failed to start graceful_shutdown timer");
+			goto err6;
+		}
 	}
 
 	/*
